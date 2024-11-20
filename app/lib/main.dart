@@ -1,100 +1,79 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const ToDoApp());
+  runApp(const MyApp());
 }
 
-class ToDoApp extends StatelessWidget {
-  const ToDoApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'ToDo App',
+      title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
       ),
-      home: const ToDoHomePage(),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class ToDoHomePage extends StatefulWidget {
-  const ToDoHomePage({Key? key}) : super(key: key);
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+
+  final String title;
 
   @override
-  // ignore: library_private_types_in_public_api
-  _ToDoHomePageState createState() => _ToDoHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _ToDoHomePageState extends State<ToDoHomePage> {
-  final List<String> _tasks = ["Hello! Try adding a new item to the list"];
-  final List<String> _completedTasks = [];
-  final TextEditingController _taskController = TextEditingController();
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    final List<String> items = ['Apple', 'Grape', 'Pear'];
 
-  void _addTask() {
-    if (_taskController.text.isNotEmpty) {
-      setState(() {
-        _tasks.add(_taskController.text);
-        _taskController.clear();
-      });
-    }
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+      ),
+      body: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(items[index]),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _navigateToNewScreen(context);
+        },
+        tooltip: 'Add',
+        child: const Icon(Icons.add),
+      ),
+    );
   }
 
-  void _deleteTask(int index) {
-    setState(() {
-      _tasks.removeAt(index);
-    });
+  void _navigateToNewScreen(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => NewScreen())
+    );
   }
+}
 
+class NewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Things to do'),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _taskController,
-                    decoration: const InputDecoration(
-                      labelText: 'Enter a task',
-                    ),
-                  ),
-                ),
-                IconButton(
-                  onPressed: _addTask,
-                  icon: const Icon(Icons.add),
-                  tooltip: 'Add Task',
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _tasks.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                  child: ListTile(
-                    title: Text(_tasks[index]),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      color: Colors.red,
-                      onPressed: () => _deleteTask(index),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
+      appBar: AppBar(title: const Text('New Screen')),
+      body: const Center(
+        child: Text(
+          'This is a new screen',
+          style: TextStyle(fontSize: 24.0),
+        ),
       ),
     );
   }
