@@ -32,7 +32,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    final List<String> items = ['Apple', 'Grape', 'Pear'];
+    final List<String> items = ['Welcome! Enter an item into your to-do list.'];
 
     return Scaffold(
       appBar: AppBar(
@@ -59,20 +59,52 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _navigateToNewScreen(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => NewScreen())
+      MaterialPageRoute(builder: (context) => AddItemView())
     );
   }
 }
 
-class NewScreen extends StatelessWidget {
+class AddItemView extends StatelessWidget {
+  AddItemView({super.key});
+
+  final TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('New Screen')),
-      body: const Center(
-        child: Text(
-          'This is a new screen',
-          style: TextStyle(fontSize: 24.0),
+      appBar: AppBar(title: const Text('Add New Item')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            // Expanded TextField allows for dynamic resizing
+            Expanded(
+              child: TextField(
+                controller: _controller,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Enter a new task to do',
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            ElevatedButton(
+              onPressed: () {
+                final text = _controller.text;
+                if (text.isNotEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Added: $text')),
+                  );
+                  _controller.clear();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please enter a task')),
+                  );
+                }
+              },
+              child: const Text('Add'),
+            ),
+          ],
         ),
       ),
     );
